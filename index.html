@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Markdown Editor moderno com preview ao vivo, templates de README e exportação para HTML/PDF.">
+  <meta name="author" content="Jonathan Ribeiro">
+  <title>Markdown Editor — Live Preview</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+  <script src="js/templates.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body data-theme="dark">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">📝</span>
+      <h1>Markdown Editor</h1>
+    </div>
+
+    <nav class="actions">
+      <button id="btn-templates" class="btn" title="Templates de README">
+        <span>📚</span> Templates
+      </button>
+      <button id="btn-import" class="btn" title="Importar arquivo .md">
+        <span>📂</span> Importar
+      </button>
+
+      <div class="dropdown">
+        <button class="btn" title="Exportar">
+          <span>⬇️</span> Exportar
+        </button>
+        <div class="dropdown-menu">
+          <button data-export="md">Como .md</button>
+          <button data-export="html">Como .html</button>
+          <button data-export="pdf">Como PDF</button>
+        </div>
+      </div>
+
+      <button id="btn-clear" class="btn btn-danger" title="Limpar tudo" aria-label="Limpar todo o conteúdo">
+        <span>🗑️</span> Limpar
+      </button>
+
+      <button id="btn-theme" class="btn icon-only" title="Alternar tema" aria-label="Alternar tema claro e escuro">
+        <span class="theme-icon">☀️</span>
+      </button>
+    </nav>
+  </header>
+
+  <section class="toolbar" id="toolbar">
+    <button data-md="bold" title="Negrito (Ctrl+B)"><b>B</b></button>
+    <button data-md="italic" title="Itálico (Ctrl+I)"><i>I</i></button>
+    <button data-md="strike" title="Riscado"><s>S</s></button>
+    <span class="sep"></span>
+    <button data-md="h1" title="Heading 1">H1</button>
+    <button data-md="h2" title="Heading 2">H2</button>
+    <button data-md="h3" title="Heading 3">H3</button>
+    <span class="sep"></span>
+    <button data-md="ul" title="Lista">• Lista</button>
+    <button data-md="ol" title="Lista numerada">1. Lista</button>
+    <button data-md="check" title="Checklist">☑ Tarefa</button>
+    <span class="sep"></span>
+    <button data-md="link" title="Link (Ctrl+K)" aria-label="Inserir link">🔗</button>
+    <button data-md="image" title="Imagem" aria-label="Inserir imagem">🖼️</button>
+    <button data-md="code" title="Código inline" aria-label="Código inline">&lt;/&gt;</button>
+    <button data-md="codeblock" title="Bloco de código" aria-label="Bloco de código">{ }</button>
+    <button data-md="quote" title="Citação" aria-label="Citação">❝</button>
+    <button data-md="table" title="Tabela" aria-label="Inserir tabela">⊞</button>
+    <button data-md="hr" title="Linha horizontal" aria-label="Linha horizontal">―</button>
+    <span class="sep"></span>
+    <button id="btn-fullscreen" title="Modo foco" class="ml-auto" aria-label="Alternar modo foco">⛶</button>
+  </section>
+
+  <main class="workspace">
+    <section class="pane editor-pane" data-pane="editor">
+      <div class="pane-header">
+        <span>✏️ Editor</span>
+        <div class="pane-actions">
+          <span class="stat" id="stat-words">0 palavras</span>
+          <span class="stat" id="stat-chars">0 caracteres</span>
+          <span class="stat" id="stat-read">0 min de leitura</span>
+        </div>
+      </div>
+      <textarea id="editor" placeholder="Comece a digitar markdown aqui... ou arraste um arquivo .md para esta área." spellcheck="false" aria-label="Editor de markdown"></textarea>
+    </section>
+
+    <div class="resizer" id="resizer"></div>
+
+    <section class="pane preview-pane" data-pane="preview">
+      <div class="pane-header">
+        <span>👁️ Preview</span>
+        <div class="pane-actions">
+          <span class="stat saved" id="stat-saved">Salvo</span>
+        </div>
+      </div>
+      <article id="preview" class="markdown-body"></article>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span>Feito com ❤️ por <a href="https://github.com/JonathanRbo" target="_blank" rel="noopener">Jonathan Ribeiro</a></span>
+    <span class="shortcuts">
+      <kbd>Ctrl</kbd>+<kbd>B</kbd> negrito ·
+      <kbd>Ctrl</kbd>+<kbd>I</kbd> itálico ·
+      <kbd>Ctrl</kbd>+<kbd>K</kbd> link ·
+      <kbd>Ctrl</kbd>+<kbd>S</kbd> baixar
+    </span>
+  </footer>
+
+  <div class="modal" id="modal-templates" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">📚 Templates de README</h2>
+        <button class="btn icon-only" data-close aria-label="Fechar">✕</button>
+      </div>
+      <div class="modal-body" id="templates-grid"></div>
+    </div>
+  </div>
+
+  <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+</body>
+</html>
